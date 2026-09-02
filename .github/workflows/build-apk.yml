@@ -1,0 +1,48 @@
+name: Gerar APK Android
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Instalar Ferramenta de Build (Bubblewrap)
+        run: npm install -g @bubblewrap/cli
+
+      - name: Configurar Ambiente Java (JDK)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Gerar Projeto Android e Compilar APK
+        run: |
+          # Configura parâmetros automáticos para o app nativo apontar para o seu GitHub Pages
+          bubblewrap init --manifest=https://SEU-USUARIO.github.io/SEU-REPOSITORIO/manifest.json --directory=android-app --batch || true
+          cd android-app
+          # Constrói o APK de forma automatizada
+          bubblewrap build --skip manifest validation
+
+      - name: Enviar APK como Artefato do GitHub
+        uses: actions/upload-artifact@v4
+        with:
+          name: meu-multibrowser-apk
+          path: |
+            android-app/*.apk
+            android-app/app/build/outputs/apk/release/*.apk
+            android-app/app/build/outputs/apk/debug/*.apk
