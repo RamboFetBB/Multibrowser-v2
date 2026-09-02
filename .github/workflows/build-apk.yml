@@ -27,49 +27,32 @@ jobs:
       - name: Configurar Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Instalar Ferramenta Bubblewrap
-        run: npm install -g @bubblewrap/cli
+      - name: Instalar PWABuilder CLI para gerar TWA limpo
+        run: npm install -g @pwabuilder/pwapush
 
-      - name: Criar Manifest TWA e Compilar APK
+      - name: Gerar Projeto Android via PWABuilder CLI
         run: |
-          # Cria um diretório limpo para o app Android
-          mkdir -p android-app
-          cd android-app
+          npx @pwabuilder/cli generate --manifest https://SEU-USUARIO.github.io/Multibrowser-v2/manifest.json --platforms android --output ./android-project || true
           
-          # Gera o txa-manifest.json básico de forma programática para evitar prompts
-          cat <<EOF > twa-manifest.json
-          {
-            "host": "SEU-USUARIO.github.io",
-            "name": "MultiBrowser Mobile",
-            "shortName": "MultiBrowser",
-            "startUrl": "/Multibrowser-v2/",
-            "themeColor": "#121212",
-            "navigationColor": "#121212",
-            "backgroundColor": "#121212",
-            "display": "standalone",
-            "orientation": "any",
-            "appVersionName": "1.0",
-            "appVersionCode": 1,
-            "signingKey": {
-              "path": "android.keystore",
-              "alias": "android"
-            },
-            "iconUrl": "https://SEU-USUARIO.github.io/Multibrowser-v2/icon.png",
-            "maskableIconUrl": "https://SEU-USUARIO.github.io/Multibrowser-v2/icon.png",
-            "webManifestUrl": "https://SEU-USUARIO.github.io/Multibrowser-v2/manifest.json",
-            "generatorApp": "bubblewrap-cli"
-          }
-          EOF
-
-          # Executa o build direto usando o manifesto gerado
-          bubblewrap update --manifest twa-manifest.json
-          bubblewrap build --skip manifest validation
+      - name: Compilar APK com Gradle
+        run: |
+          # Caso o PWABuilder gere os arquivos na raiz ou em pasta específica
+          if [ -d "android-project/android" ]; then
+            cd android-project/android
+          elif [ -d "android" ]; then
+            cd android
+          else
+            # Fallback: cria uma estrutura mínima de gradle se necessário
+            echo "Estruturando build manual..."
+            exit 1
+          fi
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
       - name: Enviar APK como Artefato do GitHub
         uses: actions/upload-artifact@v4
         with:
           name: meu-multibrowser-apk
           path: |
-            android-app/*.apk
-            android-app/app/build/outputs/apk/release/*.apk
-            android-app/app/build/outputs/apk/debug/*.apk
+            **/build/outputs/apk/debug/*.apk
+            **/build/outputs/apk/release/*.apk
