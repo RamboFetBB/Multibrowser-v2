@@ -30,14 +30,39 @@ jobs:
       - name: Instalar Ferramenta Bubblewrap
         run: npm install -g @bubblewrap/cli
 
-      - name: Inicializar Projeto Android Automaticamente
+      - name: Criar Manifest TWA e Compilar APK
         run: |
-          # Passa --manifest e responde automaticamente sem prompts interativos
-          bubblewrap init --manifest=https://SEU-USUARIO.github.io/Multibrowser-v2/manifest.json --directory=android-app --skip_jdk_check || true
-
-      - name: Compilar o APK
-        run: |
+          # Cria um diretório limpo para o app Android
+          mkdir -p android-app
           cd android-app
+          
+          # Gera o txa-manifest.json básico de forma programática para evitar prompts
+          cat <<EOF > twa-manifest.json
+          {
+            "host": "SEU-USUARIO.github.io",
+            "name": "MultiBrowser Mobile",
+            "shortName": "MultiBrowser",
+            "startUrl": "/Multibrowser-v2/",
+            "themeColor": "#121212",
+            "navigationColor": "#121212",
+            "backgroundColor": "#121212",
+            "display": "standalone",
+            "orientation": "any",
+            "appVersionName": "1.0",
+            "appVersionCode": 1,
+            "signingKey": {
+              "path": "android.keystore",
+              "alias": "android"
+            },
+            "iconUrl": "https://SEU-USUARIO.github.io/Multibrowser-v2/icon.png",
+            "maskableIconUrl": "https://SEU-USUARIO.github.io/Multibrowser-v2/icon.png",
+            "webManifestUrl": "https://SEU-USUARIO.github.io/Multibrowser-v2/manifest.json",
+            "generatorApp": "bubblewrap-cli"
+          }
+          EOF
+
+          # Executa o build direto usando o manifesto gerado
+          bubblewrap update --manifest twa-manifest.json
           bubblewrap build --skip manifest validation
 
       - name: Enviar APK como Artefato do GitHub
