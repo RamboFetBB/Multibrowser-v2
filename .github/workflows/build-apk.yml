@@ -18,9 +18,6 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Instalar Ferramenta de Build (Bubblewrap)
-        run: npm install -g @bubblewrap/cli
-
       - name: Configurar Ambiente Java (JDK)
         uses: actions/setup-java@v4
         with:
@@ -30,12 +27,17 @@ jobs:
       - name: Configurar Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Gerar Projeto Android e Compilar APK
+      - name: Instalar Ferramenta Bubblewrap
+        run: npm install -g @bubblewrap/cli
+
+      - name: Inicializar Projeto Android Automaticamente
         run: |
-          # Configura parâmetros automáticos para o app nativo apontar para o seu GitHub Pages
-          bubblewrap init --manifest=https://SEU-USUARIO.github.io/SEU-REPOSITORIO/manifest.json --directory=android-app --batch || true
+          # Passa --manifest e responde automaticamente sem prompts interativos
+          bubblewrap init --manifest=https://SEU-USUARIO.github.io/Multibrowser-v2/manifest.json --directory=android-app --skip_jdk_check || true
+
+      - name: Compilar o APK
+        run: |
           cd android-app
-          # Constrói o APK de forma automatizada
           bubblewrap build --skip manifest validation
 
       - name: Enviar APK como Artefato do GitHub
