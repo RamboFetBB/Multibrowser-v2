@@ -13,87 +13,19 @@ body, html {
     color: #e0e0e0;
 }
 
-/* Painel de Controle Superior */
-#control-panel {
-    height: 55px;
-    background-color: #1e1e1e;
-    border-bottom: 1px solid #333;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-    gap: 8px;
-    position: relative;
-    z-index: 100;
-}
-
-.control-group {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.control-group label {
-    font-size: 12px;
-    color: #b0b0b0;
-    white-space: nowrap;
-}
-
-#screen-count {
-    width: 45px;
-    padding: 4px;
-    background: #2d2d2d;
-    border: 1px solid #444;
-    color: #fff;
-    border-radius: 4px;
-    text-align: center;
-    font-size: 14px;
-}
-
-.global-url-group {
-    flex: 1;
-    max-width: 220px;
-}
-
-#global-url {
-    width: 100%;
-    padding: 5px 8px;
-    background: #2d2d2d;
-    border: 1px solid #444;
-    color: #fff;
-    border-radius: 4px;
-    font-size: 12px;
-}
-
-button {
-    background: #3b82f6;
-    border: none;
-    color: white;
-    padding: 6px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-button:active {
-    background: #2563eb;
-}
-
-/* Grid Dinâmico das Telas */
+/* Grid Fixo Exatamente 2x2 (4 Telas) */
 #browser-grid {
     width: 100%;
-    height: calc(100vh - 55px);
+    height: 100vh;
     display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     gap: 2px;
     background-color: #000;
-    overflow-y: auto;
-    padding: 2px;
+    transition: opacity 0.2s ease;
 }
 
-/* Caixa Individual de Cada Tela */
+/* Painel de Cada Tela Individual */
 .browser-pane {
     background: #1e1e1e;
     display: flex;
@@ -101,16 +33,15 @@ button:active {
     border: 1px solid #333;
     position: relative;
     overflow: hidden;
-    min-height: 150px;
 }
 
 .pane-toolbar {
-    height: 32px;
+    height: 35px;
     background: #252526;
     display: flex;
     align-items: center;
-    padding: 0 6px;
-    gap: 4px;
+    padding: 0 4px;
+    gap: 3px;
     border-bottom: 1px solid #333;
 }
 
@@ -119,22 +50,28 @@ button:active {
     background: #111;
     border: 1px solid #3d3d3d;
     color: #fff;
-    padding: 3px 6px;
+    padding: 3px 5px;
     border-radius: 3px;
-    font-size: 11px;
+    font-size: 10px;
 }
 
 .pane-btn {
     background: transparent;
     color: #aaa;
     padding: 4px 6px;
-    font-size: 11px;
+    font-size: 10px;
     border-radius: 3px;
+    cursor: pointer;
 }
 
 .pane-btn:hover {
     background: #333;
     color: #fff;
+}
+
+.pane-btn.autoclick-active {
+    color: #22c55e !important;
+    background: #064e3b !important;
 }
 
 .pane-content {
@@ -145,7 +82,7 @@ button:active {
     border: none;
 }
 
-/* Modo Fullscreen Individual para a Tela */
+/* Tela Cheia Individual */
 .browser-pane.fullscreen-pane {
     position: fixed !important;
     top: 0 !important;
@@ -155,11 +92,11 @@ button:active {
     z-index: 9999 !important;
 }
 
-/* Botão Flutuante (Ocultar/Minimizar o Grid) */
+/* Botão Flutuante */
 #floating-ball {
     position: fixed;
-    bottom: 25px;
-    right: 25px;
+    bottom: 20px;
+    right: 20px;
     width: 50px;
     height: 50px;
     background-color: #3b82f6;
@@ -168,27 +105,23 @@ button:active {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
     z-index: 10000;
     cursor: pointer;
     font-size: 20px;
-    transition: transform 0.2s, background-color 0.2s;
 }
 
-#floating-ball:active {
-    transform: scale(0.9);
-}
-
-/* Estado Oculto (Modo Invisível ativado pelo botão flutuante) */
+/* Modo Oculto: Mantém o Grid rodando invisível em background para não perder sessões nem autoclick */
 body.hidden-mode #browser-grid {
-    display: none !important;
-}
-
-body.hidden-mode #control-panel {
-    display: none !important;
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    pointer-events: none;
+    height: 0;
+    overflow: hidden;
 }
 
 body.hidden-mode #floating-ball {
-    background-color: #ef4444; /* Fica vermelho indicando que as telas estão ocultas em background */
-    opacity: 0.8;
+    background-color: #22c55e; /* Fica verde indicando que o autoclick/sessões continuam rodando ocultos */
+    box-shadow: 0 0 15px #22c55e;
 }
