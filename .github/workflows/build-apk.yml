@@ -162,11 +162,17 @@ jobs:
           # gradle.properties
           echo "android.useAndroidX=true" > native-app/gradle.properties
 
-      - name: Compilar APK com Gradle Estável (8.2)
+      - name: Baixar e Configurar Gradle 8.2 Manualmente
         run: |
           cd native-app
-          # Força a versão 8.2 do Gradle que possui compatibilidade total com o Android Gradle Plugin 8.1.1
-          gradle wrapper --gradle-version 8.2
+          # Baixa o binário do Gradle 8.2 diretamente para evitar usar a versão 9 do runner
+          wget https://services.gradle.org/distributions/gradle-8.2-bin.zip
+          unzip -q gradle-8.2-bin.zip
+          ./gradle-8.2/bin/gradle wrapper --gradle-version 8.2
+
+      - name: Compilar APK com Gradle 8.2
+        run: |
+          cd native-app
           chmod +x gradlew
           ./gradlew assembleDebug
 
