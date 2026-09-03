@@ -24,7 +24,7 @@ jobs:
 
       - name: Criar Projeto Android Nativo e Ícones de Compatibilidade
         run: |
-          mkdir -p native-app/app/src/main/java/com/multibrowser/app
+          mkdir -p native-app/app/src/main/java/com/multibrowser/v2
           mkdir -p native-app/app/src/main/res/layout
           mkdir -p native-app/app/src/main/res/values
           mkdir -p native-app/app/src/main/res/mipmap-hdpi
@@ -34,16 +34,16 @@ jobs:
           EOF
           cp native-app/app/src/main/res/mipmap-hdpi/ic_launcher.png native-app/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
 
-          # AndroidManifest.xml
+          # AndroidManifest.xml com novo pacote e nome
           cat << 'EOF' > native-app/app/src/main/AndroidManifest.xml
           <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-              package="com.multibrowser.app">
+              package="com.multibrowser.v2">
               <uses-permission android:name="android.permission.INTERNET" />
               <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
               <application
                   android:allowBackup="true"
                   android:icon="@mipmap/ic_launcher"
-                  android:label="MultiBrowser"
+                  android:label="MultiBrowser v2"
                   android:roundIcon="@mipmap/ic_launcher_round"
                   android:supportsRtl="true"
                   android:usesCleartextTraffic="true"
@@ -61,9 +61,9 @@ jobs:
           </manifest>
           EOF
 
-          # MainActivity.java configurado com o seu link exato
-          cat << 'EOF' > native-app/app/src/main/java/com/multibrowser/app/MainActivity.java
-          package com.multibrowser.app;
+          # MainActivity.java atualizado para o novo caminho do pacote com RamboFetBB
+          cat << 'EOF' > native-app/app/src/main/java/com/multibrowser/v2/MainActivity.java
+          package com.multibrowser.v2;
 
           import android.annotation.SuppressLint;
           import android.os.Bundle;
@@ -108,20 +108,20 @@ jobs:
           }
           EOF
 
-          # build.gradle (Module)
+          # build.gradle (Module) com o novo applicationId
           cat << 'EOF' > native-app/app/build.gradle
           plugins {
               id 'com.android.application'
           }
           android {
-              namespace 'com.multibrowser.app'
+              namespace 'com.multibrowser.v2'
               compileSdk 34
               defaultConfig {
-                  applicationId "com.multibrowser.app"
+                  applicationId "com.multibrowser.v2"
                   minSdk 21
                   targetSdk 34
-                  versionCode 1
-                  versionName "1.0"
+                  versionCode 2
+                  versionName "2.0"
               }
               buildTypes {
                   release {
