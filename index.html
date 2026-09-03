@@ -3,34 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MultiBrowser Mobile</title>
+    <title>MultiBrowser Pro - 4 Telas com Autoclick</title>
     <link rel="stylesheet" href="style.css">
-    <!-- FontAwesome para ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- Barra de Controle Superior -->
-    <header id="control-panel">
-        <div class="control-group">
-            <label for="screen-count"><i class="fa-solid fa-table-cells"></i> Telas (1-20):</label>
-            <input type="number" id="screen-count" min="1" max="20" value="2">
-            <button id="btn-generate"><i class="fa-solid fa-rotate"></i> Gerar</button>
-        </div>
-        <div class="control-group global-url-group">
-            <input type="text" id="global-url" placeholder="URL global (ex: https://google.com)">
-            <button id="btn-apply-all" title="Aplicar URL em todas"><i class="fa-solid fa-paper-plane"></i></button>
-        </div>
-    </header>
-
-    <!-- Grid Principal de Navegadores -->
+    <!-- Grid Fixo 2x2 (4 Telas) -->
     <main id="browser-grid">
-        <!-- As telas serão injetadas dinamicamente aqui via JavaScript -->
+        <!-- Injetado dinamicamente via script.js -->
     </main>
 
-    <!-- Botão Flutuante para Ocultar / Minimizar o Grid -->
-    <div id="floating-ball" title="Ocultar / Mostrar Telas">
+    <!-- Botão Flutuante Global Estilizado -->
+    <div id="floating-ball" title="Ocultar / Mostrar Telas (Background Ativo)">
         <i class="fa-solid fa-layer-group" id="ball-icon"></i>
+        <div id="status-pulse"></div>
     </div>
 
     <script src="script.js"></script>
