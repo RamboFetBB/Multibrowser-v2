@@ -129,7 +129,7 @@ jobs:
           }
           EOF
 
-          # build.gradle (Project - Limpo sem repositories legados)
+          # build.gradle (Project)
           cat << 'EOF' > native-app/build.gradle
           plugins {
               id 'com.android.application' version '8.1.1' apply false
@@ -139,7 +139,7 @@ jobs:
           }
           EOF
 
-          # settings.gradle (Com repositories centralizados exigidos pelo Gradle moderno)
+          # settings.gradle
           cat << 'EOF' > native-app/settings.gradle
           pluginManagement {
               repositories {
@@ -162,10 +162,11 @@ jobs:
           # gradle.properties
           echo "android.useAndroidX=true" > native-app/gradle.properties
 
-      - name: Compilar APK com Gradle
+      - name: Compilar APK com Gradle Estável (8.2)
         run: |
           cd native-app
-          gradle wrapper
+          # Força a versão 8.2 do Gradle que possui compatibilidade total com o Android Gradle Plugin 8.1.1
+          gradle wrapper --gradle-version 8.2
           chmod +x gradlew
           ./gradlew assembleDebug
 
