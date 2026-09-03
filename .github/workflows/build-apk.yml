@@ -55,7 +55,7 @@ jobs:
           </manifest>
           EOF
 
-          # MainActivity.java (Carrega o seu GitHub Pages com suporte total a LocalStorage e Cache isolado)
+          # MainActivity.java
           cat << 'EOF' > native-app/app/src/main/java/com/multibrowser/app/MainActivity.java
           package com.multibrowser.app;
 
@@ -86,7 +86,6 @@ jobs:
                   CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
 
                   webView.setWebViewClient(new WebViewClient());
-                  // Substitua pelo seu link real do GitHub Pages abaixo se necessário
                   webView.loadUrl("https://SEU-USUARIO.github.io/Multibrowser-v2/");
                   
                   setContentView(webView);
@@ -130,29 +129,17 @@ jobs:
           }
           EOF
 
-          # build.gradle (Project)
+          # build.gradle (Project - Limpo sem repositories legados)
           cat << 'EOF' > native-app/build.gradle
-          buildscript {
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-              dependencies {
-                  classpath 'com.android.tools.build:gradle:8.1.1'
-              }
-          }
-          allprojects {
-              repositories {
-                  google()
-                  mavenCentral()
-              }
+          plugins {
+              id 'com.android.application' version '8.1.1' apply false
           }
           task clean(type: Delete) {
               delete rootProject.buildDir
           }
           EOF
 
-          # settings.gradle
+          # settings.gradle (Com repositories centralizados exigidos pelo Gradle moderno)
           cat << 'EOF' > native-app/settings.gradle
           pluginManagement {
               repositories {
@@ -162,7 +149,7 @@ jobs:
               }
           }
           dependencyResolutionManagement {
-              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
               repositories {
                   google()
                   mavenCentral()
@@ -178,7 +165,6 @@ jobs:
       - name: Compilar APK com Gradle
         run: |
           cd native-app
-          # Baixa o wrapper do gradle automaticamente para compilar
           gradle wrapper
           chmod +x gradlew
           ./gradlew assembleDebug
