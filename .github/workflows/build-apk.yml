@@ -22,11 +22,17 @@ jobs:
       - name: Configurar Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Criar Projeto Android Nativo (WebView)
+      - name: Criar Projeto Android Nativo e Ícones de Compatibilidade
         run: |
           mkdir -p native-app/app/src/main/java/com/multibrowser/app
           mkdir -p native-app/app/src/main/res/layout
           mkdir -p native-app/app/src/main/res/values
+          mkdir -p native-app/app/src/main/res/mipmap-hdpi
+
+          cat << 'EOF' > native-app/app/src/main/res/mipmap-hdpi/ic_launcher.png
+          iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAGElEQVR4nO2WMQ0AMAzDsuv/6TzRCRs5uS51qQUg2QAAAAAElFTkSuQmCC
+          EOF
+          cp native-app/app/src/main/res/mipmap-hdpi/ic_launcher.png native-app/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
 
           # AndroidManifest.xml
           cat << 'EOF' > native-app/app/src/main/AndroidManifest.xml
@@ -55,7 +61,7 @@ jobs:
           </manifest>
           EOF
 
-          # MainActivity.java
+          # MainActivity.java configurado com o seu link exato
           cat << 'EOF' > native-app/app/src/main/java/com/multibrowser/app/MainActivity.java
           package com.multibrowser.app;
 
@@ -86,7 +92,7 @@ jobs:
                   CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
 
                   webView.setWebViewClient(new WebViewClient());
-                  webView.loadUrl("https://SEU-USUARIO.github.io/Multibrowser-v2/");
+                  webView.loadUrl("https://RamboFetBB.github.io/Multibrowser-v2/");
                   
                   setContentView(webView);
               }
@@ -165,8 +171,7 @@ jobs:
       - name: Baixar e Configurar Gradle 8.2 Manualmente
         run: |
           cd native-app
-          # Baixa o binário do Gradle 8.2 diretamente para evitar usar a versão 9 do runner
-          wget https://services.gradle.org/distributions/gradle-8.2-bin.zip
+          wget -q https://services.gradle.org/distributions/gradle-8.2-bin.zip
           unzip -q gradle-8.2-bin.zip
           ./gradle-8.2/bin/gradle wrapper --gradle-version 8.2
 
